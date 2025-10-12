@@ -20,6 +20,12 @@ export default defineConfig({
       "https://github.com/*",
       "https://api.github.com/*",
     ],
+    web_accessible_resources: [
+      {
+        "resources": ["injected.js"],
+        "matches": ["https://leetcode.com/*"]
+      }
+    ]
   }),
   modules: ['@wxt-dev/module-react'],
 });

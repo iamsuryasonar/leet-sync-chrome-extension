@@ -1,41 +1,7 @@
+import { BRANCH, REPO_NAME } from "@/constants";
+import { getGithubHeaders, getLanguageExt, getReadableTimestamp12h } from "@/utility";
+
 export default defineBackground(() => {
-    const BRANCH = "main";
-    const REPO_NAME = "leet-sync";
-
-    // Helper to create GitHub API headers
-    const getGithubHeaders = (token: string) => ({
-        Authorization: `token ${token}`,
-        Accept: "application/vnd.github.v3+json",
-    });
-
-    browser.webRequest.onBeforeRequest.addListener(
-        (details: any): any => {
-            if (details.method === "POST" && details.url.includes("/submit/")) {
-                try {
-                    const rawData = (details.requestBody as any)?.raw?.[0]?.bytes;
-                    if (!rawData) return;
-
-                    const bodyText = new TextDecoder("utf-8").decode(rawData);
-                    const body = JSON.parse(bodyText);
-
-                    const code = body.typed_code;
-                    const language = body.lang;
-                    const question_id = body.question_id;
-                    const timestamp = body.timestamp;
-
-                    browser.storage.local.set({
-                        lastSubmission: { question_id, language, code, timestamp },
-                    });
-                } catch (err) {
-                    console.error("Error parsing request body:", err);
-                }
-            }
-
-            return;
-        },
-        { urls: ["https://leetcode.com/problems/*/submit/"] },
-        ["requestBody"]
-    );
 
     // Get the authenticated GitHub username
     const getGithubUsername = async (token: string) => {
@@ -84,55 +50,106 @@ export default defineBackground(() => {
         return fullRepoName;
     };
 
-    // Upload code to the repo
-    const uploadCodeToRepo = async (fileName: string, fullRepoName: string, code: string, token: string) => {
-        const content = btoa(unescape(encodeURIComponent(code)));
+    // Upload code to the repo with versioning and duplicate detection
+    const uploadCodeToRepo = async (
+        fileName: string,
+        fileExt: string,
+        fullRepoName: string,
+        code: string,
+        token: string
+    ) => {
+        const encodedContent = btoa(unescape(encodeURIComponent(code)));
+        const folderPath = fileName; // Each question gets its own folder
 
-        const res = await fetch(`https://api.github.com/repos/${fullRepoName}/contents/${fileName}`, {
-            method: "PUT",
-            headers: getGithubHeaders(token),
-            body: JSON.stringify({
-                message: `Add LeetCode solution ${fileName}`,
-                content,
-                branch: BRANCH,
-            }),
-        });
+        // Fetch existing files in the folder
+        let existingFiles: any[] = [];
+        const listRes = await fetch(
+            `https://api.github.com/repos/${fullRepoName}/contents/${folderPath}`,
+            { headers: getGithubHeaders(token) }
+        );
+
+        if (listRes.status === 200) {
+            existingFiles = await listRes.json();
+        } else if (listRes.status !== 404) {
+            const err = await listRes.json();
+            throw new Error(`Failed to check existing files: ${err.message}`);
+        }
+
+        // Check if code already exists in any previous file
+        for (const file of existingFiles) {
+            if (!file.download_url) continue;
+            const existingCode = await fetch(file.download_url).then(r => r.text());
+            if (existingCode.trim() === code.trim()) {
+                console.log("Code identical to existing version — skipping upload");
+                return;
+            }
+        }
+
+        // Generate unique, readable filename using timestamp
+        const formattedTime = getReadableTimestamp12h();
+
+        const newFileName = `${fileName}-${formattedTime}.${fileExt}`;
+
+        console.log('new file path:', `https://api.github.com/repos/${fullRepoName}/contents/${folderPath}/${newFileName}`);
+
+        // Upload new file
+        const res = await fetch(
+            `https://api.github.com/repos/${fullRepoName}/contents/${folderPath}/${newFileName}`,
+            {
+                method: "PUT",
+                headers: getGithubHeaders(token),
+                body: JSON.stringify({
+                    message: `Add LeetCode solution ${newFileName}`,
+                    content: encodedContent,
+                    branch: BRANCH,
+                }),
+            }
+        );
 
         if (!res.ok) {
             const err = await res.json();
             throw new Error(`GitHub upload failed: ${err.message}`);
-        } else {
-            console.log('Code pushed successfully')
         }
+
+        console.log(`Code pushed successfully as ${newFileName}`);
     };
 
     // Background listener
     browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         if (message.type !== "UPLOAD_CODE") return;
-        try {
-            const { code, questionName, questionId, language } = message;
 
-            function getLanguageExt(language: string) {
-                return 'js'
+        const processUpload = async (submission: any) => {
+            try {
+                console.log('Code update initiated...');
+
+                const code = submission.code;
+                const questionId = submission.question_id;
+                const language = submission.language;
+                const question_slug = submission.question_slug;
+
+                const fileExt = getLanguageExt(language);
+
+                const fileName = `${questionId}_${question_slug}`;
+
+                const result = await browser.storage.local.get("githubAccessToken");
+                const githubToken = result.githubAccessToken;
+
+                if (!githubToken) throw new Error("GitHub token not found");
+
+                const username = await getGithubUsername(githubToken);
+                const fullRepoName = await ensureRepoExists(username, githubToken);
+                await uploadCodeToRepo(fileName, fileExt, fullRepoName, code, githubToken);
+
+                sendResponse({ success: true });
+            } catch (e: any) {
+                console.error("Upload process failed:", e, e.message || e);
+                sendResponse({ success: false, error: e.message || String(e) });
             }
-
-            const fileName = `${questionId}_${questionName}.${getLanguageExt(language)}`;
-
-            const result = await browser.storage.local.get("githubAccessToken");
-            const githubToken = result.githubAccessToken;
-
-            if (!githubToken) throw new Error("GitHub token not found");
-
-            const username = await getGithubUsername(githubToken);
-            const fullRepoName = await ensureRepoExists(username, githubToken);
-            await uploadCodeToRepo(fileName, fullRepoName, code, githubToken);
-
-            sendResponse({ success: true });
-        } catch (e: any) {
-            console.error("Upload process failed:", e, e.message || e);
-            sendResponse({ success: false, error: e.message || String(e) });
         }
 
+        if (message?.lastSubmission) {
+            await processUpload(message.lastSubmission);
+        }
         // Keep message channel open for async response
         return true;
     });

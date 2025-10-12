@@ -34,11 +34,23 @@ function App() {
   }, []);
 
   const handleLogIn = () => {
-    window.open(
-      "http://localhost:5173/",
-      "GitHub Login",
-      "width=600,height=700"
-    );
+    function openPopUpForAuth() {
+      const width = 500;
+      const height = 500;
+
+      // Calculate center position relative to the screen
+      const left = (window.screen.width - width) / 2;
+      const top = (window.screen.height - height) / 2;
+
+      // Open the popup centered
+      window.open(
+        import.meta.env.VITE_API_URL,
+        "GitHub Login",
+        `width=${width},height=${height},left=${left},top=${top}`
+      );
+    }
+
+    openPopUpForAuth();
 
     const messageHandler = async (event: MessageEvent<any>) => {
       if (!event.data || event.data.action !== "github-token") return;
