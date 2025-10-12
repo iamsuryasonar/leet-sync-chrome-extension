@@ -44,7 +44,7 @@ function App() {
 
       // Open the popup centered
       window.open(
-        import.meta.env.VITE_API_URL,
+        import.meta.env.VITE_SIGN_IN_URL,
         "GitHub Login",
         `width=${width},height=${height},left=${left},top=${top}`
       );

@@ -8,13 +8,13 @@ export default defineConfig({
     ],
   } as WxtViteConfig),
   manifest: () => ({
-    name: "Leetcode sync",
-    description: "Sync solved leetcode problems to github",
+    name: "Leet sync",
+    description: "Automatically Sync Your LeetCode Solutions to GitHub",
     version: '1.0.0',
     background: {
       service_worker: 'src/background/index.js',
     },
-    permissions: ['tabs', 'storage', 'activeTab', 'scripting', "webRequest"],
+    permissions: ['tabs', 'storage', 'activeTab', 'scripting'],
     host_permissions: [
       "https://leetcode.com/*",
       "https://github.com/*",

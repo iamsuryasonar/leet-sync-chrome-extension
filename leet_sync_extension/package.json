@@ -1,6 +1,6 @@
 {
-  "name": "leetcode_sync",
-  "description": "Sync solved leetcode problems to github",
+  "name": "leet_sync",
+  "description": "Automatically Sync Your LeetCode Solutions to GitHub",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -19,6 +19,7 @@
     "firebase": "^12.4.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-icons": "^5.5.0",
     "tailwindcss": "^4.1.14"
   },
   "devDependencies": {

@@ -1,6 +1,13 @@
+
+import React, { useState } from "react";
+import ReactDOM from "react-dom/client";
+import "~/assets/tailwind.css";
+import Sidebar from './Sidebar';
+
 export default defineContentScript({
   matches: ["https://leetcode.com/*"],
-  main() {
+  cssInjectionMode: "ui",
+  async main(ctx: any) {
 
     // inject script to leet code dom
     const script = document.createElement("script");
@@ -19,6 +26,23 @@ export default defineContentScript({
         });
       }
     });
+
+    const ui = await createShadowRootUi(ctx, {
+      name: "leetcode-main",
+      position: "inline",
+      anchor: "body",
+      onMount: (container: any) => {
+        const root = ReactDOM.createRoot(container);
+        root.render(<Sidebar />);
+        return root;
+      },
+      onRemove: (root: any) => {
+        root?.unmount();
+      },
+    });
+
+    ui.mount();
   },
 });
+
 
