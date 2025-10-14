@@ -13,6 +13,12 @@ export default defineContentScript({
     let script: HTMLScriptElement | null = null;
     let messageListener: ((event: MessageEvent) => void) | null = null;
 
+    browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+      if (message.type === "SOLUTION_ACCEPTED") {
+        window.postMessage({ type: "SOLUTION_ACCEPTED" }, "*");
+      }
+    });
+
     const mountSidebar = async () => {
       if (!ui) {
         ui = await createShadowRootUi(ctx, {

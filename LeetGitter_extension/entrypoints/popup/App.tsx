@@ -6,6 +6,7 @@ import {
   signOut,
 } from "firebase/auth/web-extension";
 import { auth } from "@/firebase";
+import { fetchGithubUsername } from '@/utils/githubApi';
 
 function App() {
   const [user, setUser] = useState<any>(null);
@@ -65,8 +66,9 @@ function App() {
 
       try {
         const credential = GithubAuthProvider.credential(githubAccessToken);
-        const userCredential = await signInWithCredential(auth, credential);
-        console.log("Firebase user logged in:", userCredential.user);
+        await signInWithCredential(auth, credential);
+        const username = await fetchGithubUsername(githubAccessToken);
+        browser.storage.local.set({ ['GITHUB_USERNAME']: username });
 
         if (event.source && typeof event.origin === "string") {
           (event.source as Window).postMessage(

@@ -5,7 +5,7 @@ import { MdOutlineCancel } from "react-icons/md";
 import { fetchFolderFiles, renameFileOnGithub } from "~/utils/githubApi";
 import { getGithubToken } from '@/utils/utility';
 
-export default function LeetCodeFiles({ folderPath }: { folderPath: string }) {
+export default function LeetCodeFiles({ folderPath, solutionAccepted }: { folderPath: string, solutionAccepted: boolean }) {
     const [files, setFiles] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -23,7 +23,7 @@ export default function LeetCodeFiles({ folderPath }: { folderPath: string }) {
             const folderFiles = await fetchFolderFiles(githubToken, folderPath);
             setFiles(folderFiles);
         } catch (err: any) {
-            setError(err.message);
+            setError(err.message || "Failed to fetch files");
         } finally {
             setLoading(false);
         }
@@ -32,6 +32,12 @@ export default function LeetCodeFiles({ folderPath }: { folderPath: string }) {
     useEffect(() => {
         fetchFiles();
     }, [folderPath]);
+
+    useEffect(() => {
+        if (solutionAccepted === true) {
+            fetchFiles();
+        }
+    }, [solutionAccepted]);
 
     const handleSave = async (file: any) => {
         if (!newFileName.trim() || newFileName === file.name) {
@@ -43,20 +49,38 @@ export default function LeetCodeFiles({ folderPath }: { folderPath: string }) {
             const githubToken = await getGithubToken();
             if (!githubToken) throw new Error("GitHub token not found");
 
-            await renameFileOnGithub(githubToken, file, newFileName);
+            try {
+                await renameFileOnGithub(githubToken, file, newFileName);
+                await fetchFiles();
+            } catch (error: any) {
+                setError(error.message || "Failed to rename file");
+            }
+
             setEditingFile(null);
-            await fetchFiles();
-        } catch (err) {
+        } catch (err: any) {
+            setError(err.message || "Unexpected error occurred");
             console.error("Failed to rename file:", err);
         }
     };
 
-    if (loading) return <p>Loading files...</p>;
-    if (error) return <p className="text-red-600">Error: {error}</p>;
+    useEffect(() => {
+        if (!error) return;
+        const timer = setTimeout(() => setError(null), 3000);
+        return () => clearTimeout(timer);
+    }, [error]);
+
 
     return (
         <div className="space-y-2">
-            {files?.length > 0 ? (
+            {error && (
+                <div className="p-3 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-md shadow-sm">
+                    <strong>Error:</strong> {error}
+                </div>
+            )}
+
+            {loading ? (
+                <p>Loading files...</p>
+            ) : files?.length > 0 ? (
                 files.map((file) => (
                     <FileItem
                         key={file.path}

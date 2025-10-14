@@ -22,6 +22,14 @@ export default defineBackground(() => {
                 await uploadCodeToRepo(githubToken, fullRepoName, questionName, fileName, fileExt, code);
 
                 console.log("Code uploaded successfully");
+
+                browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                    if (tabs[0]?.id) {
+                        browser.tabs.sendMessage(tabs[0].id, {
+                            type: "SOLUTION_ACCEPTED",
+                        });
+                    }
+                });
                 sendResponse({ success: true });
             } catch (e: any) {
                 console.error("Upload process failed:", e, e.message || e);

@@ -29,6 +29,11 @@ export const getLeetCodeQuestionName = (url: string) => {
     return parts[2] || "";
 };
 
+export async function getGithubUsername() {
+    const result = await browser.storage.local.get("GITHUB_USERNAME");
+    return result['GITHUB_USERNAME'] || "";
+}
+
 export const getGithubToken = async (): Promise<string> => {
     const result = await browser.storage.local.get("githubAccessToken");
     const githubToken = result.githubAccessToken;

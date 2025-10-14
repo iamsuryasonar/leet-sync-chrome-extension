@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import icon from "../../public/icon/128.png";
 import LeetCodeFiles from "./LeetCodeFiles";
 import { getLeetCodeQuestionName } from "@/utils/utility";
 import { IoMdClose } from "react-icons/io";
 import { FiMenu } from "react-icons/fi";
+import { IoCheckmarkDoneSharp } from "react-icons/io5";
 
 export default function Sidebar() {
     const [open, setOpen] = useState(false);
@@ -13,7 +14,7 @@ export default function Sidebar() {
     const [showSidebar, setShowSidebar] = useState(() =>
         window.location.href.includes("/problems/")
     );
-
+    const [solutionAccepted, setSolutionAccepted] = useState(false);
     const [dragActive, setDragActive] = useState(false);
     const [wasDragged, setWasDragged] = useState(false);
     const [dragStarted, setDragStarted] = useState(false);
@@ -147,6 +148,19 @@ export default function Sidebar() {
         }
     };
 
+    useEffect(() => {
+        const handleRefresh = (event: MessageEvent) => {
+            if (event.data?.type === "SOLUTION_ACCEPTED") {
+                setSolutionAccepted(true);
+                const timer = setTimeout(() => setSolutionAccepted(false), 10000);
+                return () => clearTimeout(timer);
+            }
+        };
+
+        window.addEventListener("message", handleRefresh);
+        return () => window.removeEventListener("message", handleRefresh);
+    }, []);
+
     return (
         <>
             {/* Toggle Button */}
@@ -157,8 +171,8 @@ export default function Sidebar() {
                     onMouseUp={handleMouseUp}
                     onTouchStart={handleMouseDown}
                     onTouchEnd={handleMouseUp}
-                    className={`fixed z-[9999] flex items-center justify-center w-12 h-12 text-white shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer ${roundedClass} ${dragActive ? "bg-[#e07e00]" : "bg-[#FFA116] hover:bg-[#FF8C00]"
-                        }`}
+                    className={`fixed z-[9999] flex items-center justify-center w-9 h-9 text-white shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer ${roundedClass} ${dragActive ? "bg-[#e07e00]" : "bg-[#FFA116] hover:bg-[#FF8C00]"
+                        } ${solutionAccepted ? "bg-green-600" : "bg-[#FFA116] hover:bg-[#FF8C00]"}`}
                     style={{
                         top: buttonPosition.top,
                         left: buttonPosition.left,
@@ -167,7 +181,7 @@ export default function Sidebar() {
                     }}
                     title="Open LeetSync"
                 >
-                    <FiMenu size={24} />
+                    {!solutionAccepted ? <IoCheckmarkDoneSharp size={18} /> : <FiMenu size={18} />}
                 </button>
             )}
 
@@ -197,7 +211,7 @@ export default function Sidebar() {
 
                 {/* Sidebar Content */}
                 <div className="overflow-y-auto h-[calc(100%-56px)]">
-                    <LeetCodeFiles folderPath={questionName} />
+                    <LeetCodeFiles folderPath={questionName} solutionAccepted={solutionAccepted} />
                 </div>
             </div>
         </>

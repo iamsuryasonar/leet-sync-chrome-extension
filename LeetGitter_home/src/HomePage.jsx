@@ -18,8 +18,8 @@ export default function HomePage() {
             </h2>
             <p className="text-slate-600 mt-3">
               Leetgitter seamlessly backs up your accepted LeetCode solutions to
-              GitHub. Each problem is organized by folder (Question ID + Name),
-              so you can track your progress, maintain a clean workflow, and
+              GitHub. Each problem is organized by folder (Question Name), so
+              you can track your progress, maintain a clean workflow, and
               revisit your solutions anytime.
             </p>
           </motion.div>
@@ -32,27 +32,27 @@ export default function HomePage() {
           >
             <FeatureCard
               title="Auto Upload"
-              desc="Accepted solutions are instantly uploaded to your GitHub repo without any manual steps."
+              desc="Accepted solutions are automatically detected and uploaded to your GitHub repository without manual intervention."
             />
             <FeatureCard
               title="Organized Folders"
-              desc="Each problem gets a dedicated folder named with the Question ID and title for easy navigation."
+              desc="Each LeetCode problem gets a dedicated folder named after its ID and title for easy navigation and versioning."
             />
             <FeatureCard
-              title="Track Progress"
-              desc="View a complete history of all uploaded problems with timestamps and details."
+              title="Edit & Rename"
+              desc="You can rename your uploaded files directly in the sidebar, and updates are synced to GitHub."
+            />
+            <FeatureCard
+              title="Versioning"
+              desc="Each file upload is timestamped, maintaining a clear history of your solutions."
             />
             <FeatureCard
               title="GitHub Integration"
-              desc="Securely connect your GitHub account once and Leetgitter handles the rest."
+              desc="Connect your GitHub account securely once, and Leetgitter handles all uploads and file management."
             />
             <FeatureCard
-              title="Multi-Language Support"
-              desc="Supports JavaScript, Python, C++, Java, and more - your code stays organized regardless of language."
-            />
-            <FeatureCard
-              title="Privacy-First"
-              desc="Your code is only uploaded to your GitHub repository - nothing is sent elsewhere."
+              title="Track Progress"
+              desc="View all uploaded solutions for each problem and keep track of your progress over time."
             />
           </motion.div>
 
@@ -62,7 +62,7 @@ export default function HomePage() {
               Many developers struggle to keep track of their LeetCode
               solutions. Local folders and downloads can quickly become messy.
               Leetgitter ensures every accepted solution is backed up,
-              organized, and easily accessible on GitHub, saving you time and
+              organized, editable, and versioned on GitHub, saving you time and
               reducing frustration.
             </p>
           </motion.div>
@@ -92,8 +92,12 @@ export default function HomePage() {
                 after the problem.
               </li>
               <li>
-                All your solutions are safely stored and organized for future
-                reference.
+                You can rename uploaded files or track versions directly from
+                the sidebar.
+              </li>
+              <li>
+                All your solutions are safely stored, organized, and versioned
+                for future reference.
               </li>
             </ul>
           </div>

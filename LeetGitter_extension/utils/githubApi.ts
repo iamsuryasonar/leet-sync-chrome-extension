@@ -1,12 +1,14 @@
 // githubApi.ts
 import { BRANCH, REPO_NAME } from "@/constants";
+import { getReadableTimestamp12h } from '@/utils/utility';
+import { getGithubUsername } from '@/utils/utility';
 
 const getGithubHeaders = (token: string) => ({
     Authorization: `token ${token}`,
     Accept: "application/vnd.github.v3+json",
 });
 
-export const getGithubUsername = async (token: string) => {
+export const fetchGithubUsername = async (token: string) => {
     const res = await fetch("https://api.github.com/user", {
         headers: getGithubHeaders(token),
     });
@@ -17,7 +19,7 @@ export const getGithubUsername = async (token: string) => {
 
 // Ensure that the repository exists. Creates it if missing.
 export const ensureRepoExists = async (token: string) => {
-    const username = await getGithubUsername(token);
+    const username = await getGithubUsername();
     const fullRepoName = `${username}/${REPO_NAME}`;
 
     const repoRes = await fetch(`https://api.github.com/repos/${fullRepoName}`, {
@@ -64,6 +66,8 @@ export const uploadCodeToRepo = async (
 ) => {
     const encodedContent = btoa(unescape(encodeURIComponent(code)));
     const folderPath = questionName; // each question gets its own folder
+    const formattedTime = getReadableTimestamp12h();
+    const newFileName = `${fileName}-${formattedTime}.${fileExt}`;
 
     // Fetch existing files in the folder
     let existingFiles: any[] = [];
@@ -89,11 +93,6 @@ export const uploadCodeToRepo = async (
         }
     }
 
-    // Generate unique timestamped filename
-    const { getReadableTimestamp12h } = await import("@/utils/utility");
-    const formattedTime = getReadableTimestamp12h();
-    const newFileName = `${fileName}-${formattedTime}.${fileExt}`;
-
     const res = await fetch(
         `https://api.github.com/repos/${fullRepoName}/contents/${folderPath}/${newFileName}`,
         {
@@ -117,7 +116,7 @@ export const uploadCodeToRepo = async (
 
 // Fetch folder contents from GitHub with cache-busting
 export const fetchFolderFiles = async (token: string, folderPath: string) => {
-    const username = await getGithubUsername(token);
+    const username = await getGithubUsername();
     const fullRepoName = `${username}/${REPO_NAME}`;
     const apiUrl = `https://api.github.com/repos/${fullRepoName}/contents/${folderPath}?ref=${BRANCH}&t=${Date.now()}`;
 
@@ -129,12 +128,21 @@ export const fetchFolderFiles = async (token: string, folderPath: string) => {
     return data;
 };
 
-// Rename a file on GitHub
 export const renameFileOnGithub = async (token: string, file: any, newName: string) => {
-    const username = await getGithubUsername(token);
+    const username = await getGithubUsername();
     const repo = `${username}/${REPO_NAME}`;
     const oldPath = file.path;
     const newPath = oldPath.replace(file.name, newName);
+
+    // Check if newPath already exists
+    const checkResponse = await fetch(`https://api.github.com/repos/${repo}/contents/${newPath}`, {
+        method: "GET",
+        headers: getGithubHeaders(token),
+    });
+
+    if (checkResponse.status === 200) {
+        throw new Error('File name already exist');
+    }
 
     const contentResponse = await fetch(file.download_url);
     const content = await contentResponse.text();
