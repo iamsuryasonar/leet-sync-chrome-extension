@@ -1,10 +1,4 @@
-import { languageExtensions } from "./constants";
-
-// Helper to create GitHub API headers
-export const getGithubHeaders = (token: string) => ({
-    Authorization: `token ${token}`,
-    Accept: "application/vnd.github.v3+json",
-});
+import { languageExtensions } from "../constants";
 
 export function getLanguageExt(language: string) {
     return languageExtensions[language.toLowerCase()] || "txt";
@@ -27,4 +21,17 @@ export const getReadableTimestamp12h = () => {
     const milliseconds = pad(now.getMilliseconds(), 3);
 
     return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}-${milliseconds}${ampm}`;
+};
+
+export const getLeetCodeQuestionName = (url: string) => {
+    const pathname = new URL(url).pathname;
+    const parts = pathname.split("/");
+    return parts[2] || "";
+};
+
+export const getGithubToken = async (): Promise<string> => {
+    const result = await browser.storage.local.get("githubAccessToken");
+    const githubToken = result.githubAccessToken;
+    if (!githubToken) throw new Error("GitHub token not found");
+    return githubToken;
 };

@@ -36,8 +36,6 @@ window.fetch = async (...args) => {
                     language: body.lang,
                     code: body.typed_code,
                 };
-
-                console.log("lastSubmission captured:", lastSubmission);
             }
         } catch (err) {
             console.error("Error parsing submission request body:", err);
@@ -55,7 +53,6 @@ window.fetch = async (...args) => {
 
             if (lastSubmission && data?.submission_id) {
                 lastSubmission.submission_id = data.submission_id.toString();
-                console.log("submission_id added to lastSubmission:", lastSubmission);
             }
         } catch (err) {
             console.error("Error reading /submit/ response body:", err);
@@ -69,8 +66,6 @@ window.fetch = async (...args) => {
             const data = await clone.json();
 
             if (lastSubmission && data?.status_msg === "Accepted" && data?.submission_id === lastSubmission.submission_id) {
-                console.log('lastSubmission', lastSubmission);
-
                 window.postMessage({ type: "SUBMISSION_COMPLETE", lastSubmission }, "*");
             }
         } catch (err) {
