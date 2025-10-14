@@ -90,9 +90,19 @@ function FileItem({
     newFileName: string;
     setEditingFile: (val: string | null) => void;
     setNewFileName: (val: string) => void;
-    handleSave: (file: any) => void;
+    handleSave: (file: any) => Promise<void>;
 }) {
+    const [saving, setSaving] = useState(false);
     const isEditing = editingFile === file.name;
+
+    const onSave = async () => {
+        setSaving(true);
+        try {
+            await handleSave(file);
+        } finally {
+            setSaving(false);
+        }
+    };
 
     return (
         <div className="border rounded-lg flex items-center justify-between shadow-sm hover:shadow-md transition-shadow bg-white">
@@ -101,17 +111,27 @@ function FileItem({
                     <input
                         value={newFileName}
                         onChange={(e) => setNewFileName(e.target.value)}
-                        onKeyDown={(e) => e.key === "Enter" && handleSave(file)}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                e.preventDefault();
+                                onSave();
+                            }
+                        }}
                         className="flex-grow border px-3 py-2 rounded-md text-sm outline-none focus:border-gray-600 focus:ring-1 focus:ring-gray-600"
                         autoFocus
                     />
-                    <button
-                        onClick={() => handleSave(file)}
-                        title="Save"
-                        className="p-1 bg-green-100 text-[#333] hover:text-white rounded-full hover:bg-green-600 transition-colors cursor-pointer"
-                    >
-                        <SiTicktick size={16} />
-                    </button>
+                    {saving ? (
+                        <div className="w-6 h-6 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
+                    ) : (
+                        <button
+                            onClick={onSave}
+                            title="Save"
+                            className="p-1 bg-green-100 text-[#333] hover:text-white rounded-full hover:bg-green-600 transition-colors cursor-pointer"
+                        >
+                            <SiTicktick size={16} />
+                        </button>
+                    )}
+
                     <button
                         onClick={() => setEditingFile(null)}
                         title="Cancel"
