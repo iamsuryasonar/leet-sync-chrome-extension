@@ -14,10 +14,10 @@ export default function HomePage() {
             transition={{ delay: 0.05 }}
           >
             <h2 className="text-4xl font-extrabold">
-              LeetSync - Automatically Upload Your Accepted LeetCode Solutions
+              Leetgitter - Automatically Upload Your Accepted LeetCode Solutions
             </h2>
             <p className="text-slate-600 mt-3">
-              LeetSync seamlessly backs up your accepted LeetCode solutions to
+              Leetgitter seamlessly backs up your accepted LeetCode solutions to
               GitHub. Each problem is organized by folder (Question ID + Name),
               so you can track your progress, maintain a clean workflow, and
               revisit your solutions anytime.
@@ -44,7 +44,7 @@ export default function HomePage() {
             />
             <FeatureCard
               title="GitHub Integration"
-              desc="Securely connect your GitHub account once and LeetSync handles the rest."
+              desc="Securely connect your GitHub account once and Leetgitter handles the rest."
             />
             <FeatureCard
               title="Multi-Language Support"
@@ -57,13 +57,13 @@ export default function HomePage() {
           </motion.div>
 
           <motion.div className="mt-6 p-6 bg-white rounded-2xl shadow">
-            <h3 className="text-lg font-semibold">Why Use LeetSync?</h3>
+            <h3 className="text-lg font-semibold">Why Use Leetgitter?</h3>
             <p className="text-slate-600 mt-2">
               Many developers struggle to keep track of their LeetCode
               solutions. Local folders and downloads can quickly become messy.
-              LeetSync ensures every accepted solution is backed up, organized,
-              and easily accessible on GitHub, saving you time and reducing
-              frustration.
+              Leetgitter ensures every accepted solution is backed up,
+              organized, and easily accessible on GitHub, saving you time and
+              reducing frustration.
             </p>
           </motion.div>
 
@@ -84,7 +84,9 @@ export default function HomePage() {
             <h3 className="text-lg font-semibold">How It Works</h3>
             <ul className="list-disc pl-5 text-slate-600 space-y-2">
               <li>Accept a problem on LeetCode and submit your solution.</li>
-              <li>LeetSync detects your accepted submission automatically.</li>
+              <li>
+                Leetgitter detects your accepted submission automatically.
+              </li>
               <li>
                 The solution is uploaded to your GitHub repo in a folder named
                 after the problem.
@@ -99,8 +101,8 @@ export default function HomePage() {
           <footer className="text-sm text-slate-500">
             <div className="flex items-center justify-end">
               <div>
-                © {new Date().getFullYear()} LeetSync by Stackbits - Built with
-                ❤️
+                © {new Date().getFullYear()} Leetgitter by Stackbits - Built
+                with ❤️
               </div>
             </div>
           </footer>

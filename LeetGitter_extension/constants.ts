@@ -1,5 +1,5 @@
 export const BRANCH = "main";
-export const REPO_NAME = "leet-sync";
+export const REPO_NAME = "leetgitter-synced";
 
 export const languageExtensions: Record<string, string> = {
     "javascript": "js",

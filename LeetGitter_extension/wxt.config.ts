@@ -8,7 +8,7 @@ export default defineConfig({
     ],
   } as WxtViteConfig),
   manifest: () => ({
-    name: "Leet sync",
+    name: "LeetGitter",
     description: "Automatically Sync Your LeetCode Solutions to GitHub",
     version: '1.0.0',
     background: {

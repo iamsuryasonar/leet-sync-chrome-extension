@@ -28,7 +28,7 @@ export default defineBackground(() => {
                 headers: getGithubHeaders(token),
                 body: JSON.stringify({
                     name: REPO_NAME,
-                    description: "LeetSync solutions repo",
+                    description: "LeetGitter solutions repo",
                     private: false,
                     auto_init: true,
                 }),

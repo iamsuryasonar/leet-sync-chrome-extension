@@ -8,13 +8,13 @@ export default function Nav() {
           <div className="flex items-center gap-3">
             <div className="rounded-md">
               <img
-                alt="LeetSync icon"
+                alt="leetgitter icon"
                 src={icon}
                 className="w-6 h-6 aspect-square"
               />
             </div>
             <div>
-              <h1 className="text-xl md:text-2xl font-semibold">LeetSync</h1>
+              <h1 className="text-xl md:text-2xl font-semibold">Leetgitter</h1>
               <p className="text-xs md:text-sm text-slate-500">
                 Automatically upload your accepted LeetCode solutions to GitHub
               </p>

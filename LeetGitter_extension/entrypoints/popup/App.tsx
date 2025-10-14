@@ -100,7 +100,7 @@ function App() {
 
   return (
     <div className="w-80 p-4 text-center font-sans border border-gray-200 rounded-lg shadow-md bg-white">
-      <h1 className="text-2xl font-bold mb-4">Leet Sync</h1>
+      <h1 className="text-2xl font-bold mb-4">LeetGitter</h1>
 
       <div className="flex flex-col items-center gap-3">
         {loading ? (
