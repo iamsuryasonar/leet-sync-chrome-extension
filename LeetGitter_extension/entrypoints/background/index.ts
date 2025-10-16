@@ -2,6 +2,18 @@ import { ensureRepoExists, uploadCodeToRepo } from "~/utils/githubApi";
 import { getLanguageExt, getGithubToken } from "@/utils/utility";
 
 export default defineBackground(() => {
+    browser.runtime.onInstalled.addListener((details) => {
+        if (details.reason === "install") {
+            browser.tabs.query({ url: "*://leetcode.com/*" }, (tabs: any) => {
+                tabs.forEach((tab: any) => browser.tabs.reload(tab.id));
+            });
+
+            browser.tabs.create({
+                url: "http://leetgitter.stackbits.in",
+            });
+        }
+    });
+
     browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         if (message.type !== "UPLOAD_CODE") return;
 

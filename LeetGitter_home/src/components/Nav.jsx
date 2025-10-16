@@ -23,7 +23,7 @@ export default function Nav() {
           <a
             target="_blank"
             rel="noopener noreferrer"
-            href="https://chrome.google.com/webstore/detail/leet-sync/your-extension-id"
+            href="https://chromewebstore.google.com/detail/leetgitter/bccoibndnjjohjgmmiigflljocjmcnmk"
             className="px-4 py-2 bg-slate-900 text-white rounded-md cursor-pointer"
           >
             Get the Extension

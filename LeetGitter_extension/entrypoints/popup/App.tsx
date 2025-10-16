@@ -6,7 +6,10 @@ import {
   signOut,
 } from "firebase/auth/web-extension";
 import { auth } from "@/firebase";
+import { FaGithub } from "react-icons/fa";
+import { motion } from 'framer-motion';
 import { fetchGithubUsername } from '@/utils/githubApi';
+import logo from '@/public/icon/128.png';
 
 function App() {
   const [user, setUser] = useState<any>(null);
@@ -94,6 +97,7 @@ function App() {
   const handleLogout = async () => {
     try {
       await signOut(auth);
+      browser.storage.local.remove(["GITHUB_USERNAME", "sidebarButtonPosition"]);
       console.log("User logged out");
     } catch (err) {
       console.error("Logout failed:", err);
@@ -101,38 +105,73 @@ function App() {
   };
 
   return (
-    <div className="w-80 p-4 text-center font-sans border border-gray-200 rounded-lg shadow-md bg-white">
-      <h1 className="text-2xl font-bold mb-4">LeetGitter</h1>
+    <motion.div
+      initial={{ opacity: 0, y: 30, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="w-80 p-6 text-center font-sans border border-gray-200 rounded-2xl shadow-lg bg-gradient-to-b from-white to-gray-50"
+    >
+      {/* Header */}
+      <div className="flex flex-col items-center mb-5">
+        <motion.img
+          initial={{ rotate: -10, opacity: 0 }}
+          animate={{ rotate: 0, opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+          src={logo}
+          alt="LeetGitter Logo"
+          className="w-14 h-14 mb-2 drop-shadow-sm"
+        />
+        <h1 className="text-3xl font-bold text-gray-800">LeetGitter</h1>
+        <p className="text-gray-500 text-sm">by <a href="http://stackbits.in/" target="_blank">Stackbits</a></p>
+      </div>
 
-      <div className="flex flex-col items-center gap-3">
+      {/* Body */}
+      <div className="flex flex-col items-center gap-4">
         {loading ? (
-          <p className="text-gray-500 text-sm">Loading...</p>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-gray-500 text-sm"
+          >
+            Loading...
+          </motion.p>
         ) : user ? (
           <>
-            <img
+            <motion.img
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
               src={user.photoURL || "https://via.placeholder.com/60"}
               alt="Profile"
-              className="w-16 h-16 rounded-full"
+              className="w-16 h-16 rounded-full border border-gray-300 shadow-sm"
             />
-            <h3 className="text-md font-semibold truncate">{user.displayName || user.email}</h3>
+            <h3 className="text-md font-semibold text-gray-800 truncate">
+              {user.displayName || user.email}
+            </h3>
             <p className="text-gray-500 text-sm truncate">{user.email}</p>
-            <button
+
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.97 }}
               onClick={handleLogout}
-              className="w-full px-4 py-2 bg-red-500 text-white rounded-md font-semibold hover:bg-red-600 transition"
+              className="w-full px-4 py-2 bg-red-500 text-white rounded-md font-semibold shadow hover:bg-red-600 transition cursor-pointer"
             >
               Log Out
-            </button>
+            </motion.button>
           </>
         ) : (
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.97 }}
             onClick={handleLogIn}
-            className="w-full px-4 py-2 bg-gray-900 text-white rounded-md font-semibold hover:bg-gray-800 transition"
+            className="flex items-center justify-center w-full gap-2 px-4 py-2 bg-gray-900 text-white rounded-md font-semibold shadow hover:bg-gray-800 transition cursor-pointer"
           >
+            <FaGithub size={20} />
             Log In with GitHub
-          </button>
+          </motion.button>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
 

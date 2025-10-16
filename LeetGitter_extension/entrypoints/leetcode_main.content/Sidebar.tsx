@@ -181,7 +181,7 @@ export default function Sidebar() {
                     }}
                     title="Open LeetSync"
                 >
-                    {!solutionAccepted ? <IoCheckmarkDoneSharp size={18} /> : <FiMenu size={18} />}
+                    {solutionAccepted ? <IoCheckmarkDoneSharp size={18} /> : <FiMenu size={18} />}
                 </button>
             )}
 
