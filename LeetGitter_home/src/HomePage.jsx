@@ -8,7 +8,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 py-12 px-6 lg:px-24">
       <Nav />
 
-      <main className="max-w-6xl mx-auto mt-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+      <main className="max-w-6xl mx-auto mt-10 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <section className="space-y-6">
           <motion.div
             initial={{ opacity: 0, y: 8 }}
@@ -94,22 +94,10 @@ export default function HomePage() {
               desc="View all uploaded solutions for each problem and keep track of your progress over time."
             />
           </motion.div>
-
-          <motion.div className="mt-6 flex gap-3">
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              href="https://chromewebstore.google.com/detail/leetgitter/bccoibndnjjohjgmmiigflljocjmcnmk"
-              className="px-4 py-2 bg-slate-900 text-white rounded-md cursor-pointer shadow hover:bg-slate-800 transition"
-            >
-              Get the Extension
-            </a>
-          </motion.div>
         </section>
-
-        <section className="space-y-6">
+        <section className="">
           <motion.div
-            className="mt-6 p-6 bg-white rounded-2xl shadow-md border border-slate-100"
+            className=" p-6 bg-white rounded-2xl shadow-md border border-slate-100"
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
@@ -151,7 +139,7 @@ export default function HomePage() {
               reducing frustration.
             </p>
           </motion.div>
-          <footer className="text-sm text-slate-500">
+          <footer className="mt-4 text-sm text-slate-500">
             <div className="flex items-center justify-end">
               <div>
                 © {new Date().getFullYear()} Leetgitter by{" "}
