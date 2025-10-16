@@ -14,11 +14,9 @@ export default defineConfig({
     background: {
       service_worker: 'src/background/index.js',
     },
-    permissions: ['tabs', 'storage', 'activeTab', 'scripting'],
+    permissions: ['tabs', 'storage', 'activeTab'],
     host_permissions: [
       "https://leetcode.com/*",
-      "https://github.com/*",
-      "https://api.github.com/*",
     ],
     web_accessible_resources: [
       {

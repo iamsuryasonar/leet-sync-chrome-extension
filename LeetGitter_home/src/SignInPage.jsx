@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { motion } from "framer-motion";
 
 function SignInPage() {
   useEffect(() => {
@@ -36,7 +37,7 @@ function SignInPage() {
         // If no code, start OAuth flow automatically
         const clientId = import.meta.env.VITE_GITHUB_CLIENT_ID;
         const redirectUri = import.meta.env.VITE_REDIRECT_URL;
-        const scope = "repo user";
+        const scope = "repo read:user";
 
         const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(
           redirectUri
@@ -50,19 +51,31 @@ function SignInPage() {
   }, []);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-        flexDirection: "column",
-        textAlign: "center",
-        gap: "10px",
-      }}
-    >
-      <h1>Logging in with GitHub...</h1>
-      <p>Please wait while we complete authentication.</p>
+    <div className="flex flex-col items-center justify-center h-screen text-center gap-4 bg-gray-50">
+      <motion.h1
+        className="text-3xl font-bold text-gray-800"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        Logging in with GitHub...
+      </motion.h1>
+
+      <motion.p
+        className="text-gray-600 text-lg"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3, duration: 0.6 }}
+      >
+        Please wait while we complete authentication.
+      </motion.p>
+
+      <motion.div
+        className="mt-6 w-12 h-12 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin"
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 0.5 }}
+      />
     </div>
   );
 }
