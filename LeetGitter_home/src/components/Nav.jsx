@@ -23,7 +23,7 @@ export default function Nav() {
           <a
             target="_blank"
             rel="noopener noreferrer"
-            href="https://chromewebstore.google.com/detail/leetgitter/bccoibndnjjohjgmmiigflljocjmcnmk"
+            href="https://chromewebstore.google.com/detail/leetgitter/pmabapfgdcdiohadkdllgoepldackklj"
             className="px-4 py-2 bg-slate-900 text-white rounded-md cursor-pointer"
           >
             Get the Extension
