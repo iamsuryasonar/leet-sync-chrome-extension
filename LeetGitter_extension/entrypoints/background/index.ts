@@ -1,4 +1,4 @@
-import { ensureRepoExists, uploadCodeToRepo } from "~/utils/githubApi";
+import { ensureRepoExists, uploadCodeToRepo } from "@/utils/githubApi";
 import { getLanguageExt, getGithubToken } from "@/utils/utility";
 
 export default defineBackground(() => {

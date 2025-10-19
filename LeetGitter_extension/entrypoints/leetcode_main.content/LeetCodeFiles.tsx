@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { SiTicktick } from "react-icons/si";
 import { MdOutlineCancel } from "react-icons/md";
-import { fetchFolderFiles, renameFileOnGithub } from "~/utils/githubApi";
+import { fetchFolderFiles, renameFileOnGithub } from "@/utils/githubApi";
 import { getGithubToken } from '@/utils/utility';
 
 export default function LeetCodeFiles({ folderPath, solutionAccepted }: { folderPath: string, solutionAccepted: boolean }) {

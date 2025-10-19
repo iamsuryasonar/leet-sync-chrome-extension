@@ -1,4 +1,4 @@
-import icon from "../../src/assets/128.png";
+import icon from "../assets/128.png";
 
 export default function Nav() {
   return (
